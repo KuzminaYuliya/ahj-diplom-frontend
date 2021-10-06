@@ -4,7 +4,7 @@ stack: node 10
 
 branches:
   only:
-    - main
+    -  master  # ветка git
 
 cache: node_modules
 
