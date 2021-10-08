@@ -1,12 +1,14 @@
 /* eslint-disable linebreak-style */
 /* eslint-disable no-useless-return */
+/* eslint-disable no-console */
 // eslint-disable-next-line import/no-unresolved
 import Worker from './webWorker.js';
 import PrintMessage from './PrintMessage.js';
 import CryptKey from './CryptKey.js';
 
 const localArrMessages = [];
-const urls = 'obscure-thicket-44119.com';
+const urls = 'ahj-diplom-backend.herokuapp.com';
+// const urls = 'localhost:7070';
 
 export default class TransferMessage {
   constructor(crypt) {
@@ -22,6 +24,7 @@ export default class TransferMessage {
     this.printMsg = new PrintMessage(this.elListMessages, this.crypt);
     this.initWS();
     const resp = await fetch(`${this.url}initmsg`);
+    console.log('777');
     await resp.text();
     this.lazyLoad();
   }
@@ -37,6 +40,15 @@ export default class TransferMessage {
       if (itemEl !== null) {
         itemEl.classList.remove('loaded');
         return;
+      }
+      const deCrypt = this.crypt.deCrypt(inpMsg.msg);
+      if (deCrypt && deCrypt !== null) {
+        inpMsg.msg = deCrypt;
+        localArrMessages.push(inpMsg);
+        this.printMsg.printMessage(inpMsg, 'end');
+        document
+          .querySelector(`[data-id="${inpMsg.id}"]`)
+          .classList.remove('loaded');
       }
     });
   }
